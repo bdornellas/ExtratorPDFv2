@@ -7,7 +7,10 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.jar.Manifest;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -41,28 +44,28 @@ public class Janela implements MouseListener{
 	private JMenuItem abrirArquivosMenu,sair,descartarArquivos,dividirArquivos,configuracoes,checarConteudo,renomearArquivos,listarArquivos,sobre;
 	JFileChooser janelaDiretorio;
 
-	//SWING JANELA DE CONFIGURA��ES
+	//SWING JANELA DE CONFIGURAÇÕES
 	private JFrame janelaConfiguracoes;
 	private JLabel labelPaginasPorArquivo,labelPaginaInicial,labelPaginaFinal;
 	private JTextField textoPaginasPorArquivo,textoPaginaInicial,textoPaginaFinal;
 	private JButton salvarConfiguracoes,cancelarConfiguracoes;
 	private JPanel painel1,painel2;
 
-	//VARI�VEIS
+	//VARIÁVEIS
 	final String ARQUIVOSABERTOS="Arquivos abertos: ";
 	final String TITULO="Extrator PDF";
 	private ArrayList<ArquivoPDF> listaArquivosPDF;//Lista de arquivos PDF
-	private Integer paginasPorArquivo;
+	private Integer paginasPorArquivo;//Indica quantas páginas cada arquivo gerado deve ter
 	private Integer paginaInicial;//Inidica a partir de qual página deve começar a divisão
 	private Integer paginaFinal;//Indica até qual página deve começar a divisão
 
-	//M�todo para criar a janela principal
+	//Método para criar a janela principal
 	public void criajanela(){
 		janela=new JFrame();
 		menu=new JMenuBar();
 		inicio=new JMenu("Inicio");
-		opcoes=new JMenu("Op��es");
-		ajuda=new JMenu("Informa��es");
+		opcoes=new JMenu("Opções");
+		ajuda=new JMenu("Informações");
 		executar=new JMenu("Executar");
 		abrirArquivosMenu=new JMenuItem("Abrir arquivos");
 		sair=new JMenuItem("Sair");
@@ -70,9 +73,9 @@ public class Janela implements MouseListener{
 		descartarArquivos.setEnabled(false);
 		dividirArquivos=new JMenuItem("1 - Dividir PDF");
 		dividirArquivos.setEnabled(false);
-		configuracoes=new JMenuItem("Configura��es");
+		configuracoes=new JMenuItem("Configurações");
 		configuracoes.setEnabled(false);
-		checarConteudo=new JMenuItem("Visualizar conte�do");
+		checarConteudo=new JMenuItem("Visualizar conteúdo");
 		checarConteudo.setEnabled(false);
 		renomearArquivos=new JMenuItem("2 - Renomear arquivos");
 		renomearArquivos.setEnabled(false);
@@ -119,7 +122,7 @@ public class Janela implements MouseListener{
 		scroll=new JScrollPane(texto);
 		diretorio=new JTextField(45);
 		diretorio.setEditable(false);
-		titulo=new JLabel("Diret�rio:");
+		titulo=new JLabel("Diretório:");
 		labelQtdeArquivos=new JLabel(ARQUIVOSABERTOS+"0");
 		labelQtdeArquivos.addMouseListener(this);
 		labelQtdeArquivos.setToolTipText("Clique para visualizar os arquivos abertos");
@@ -417,13 +420,39 @@ public class Janela implements MouseListener{
 				Message.mensagemAlerta("Nenhum arquivo aberto no momento", TITULO);
 			}
 		}
-		if(e.getSource()==sobre){//Se o usu�rio clica em SOBRE
+		if(e.getSource()==sobre){//Se o usuário clica em SOBRE
 			texto.setText("");
-			texto.append("Ao abrir mais de um arquivo PDF, o sistema checa automaticamente se os arquivos possuem o conte�do necess�rio."
+			texto.append("Extrator PDF V2.\n\n"
+					+ "Gestor: Danilo André Silva\n"
+					+ "Desenvolvimento: Bruno Barcelos Dornellas\n"
+					+ "\n"
+					+ "Aplicação de leitura, divisão e criação de arquivos PDF Carta Remessa.\n"
+					+ "É possível criar vários arquivos PDF a partir de um único arquivo original.\n"
+					+ "\n"
+					+ "Parar dividir um PDF:\n\n"
+					+ "1 - Clique no menu Inicio;\n"
+					+ "2 - Clique em Abrir arquivos;\n"
+					+ "3 - Selecione o arquivo PDF desejado;\n"
+					+ "4 - Clique no menu Executar;\n"
+					+ "5 - Escolha a opção 1 - Dividir PDF.\n"
+					+ "\n"
+					+ "Após este processo você poderá conferir o relatório do processo neste console."
+					+ "\n"
+					+ "\n"
+					+ "Para renomear os PDFs gerados, é necessário selecionar mais de 1 arquivo:\n"
+					+ "\n"
+					+ "1 - Clique no menu Inicio;\n"
+					+ "2 - Clique em Abrir Arquivos;\n"
+					+ "3 - Selecione todos os arquivos gerados;\n"
+					+ "4 - Clique no menu executar;\n"
+					+ "5 - Escolha a opção 2 - Renomear PDF."
+					+ "\n"
+					+ "\n"
+					+ "Ao abrir mais de um arquivo PDF, o sistema checa automaticamente se os arquivos possuem o conteúdo necessário."
 					+ "\n");
-			Message.mensagemInformacao("Desenvolvimento: Bruno Dornellas\ndornellas@bb.com.br\nF1691834", TITULO);
+			//Message.mensagemInformacao("Desenvolvimento: Bruno Dornellas\ndornellas@bb.com.br\nF1691834", TITULO);
 		}
-		if(e.getSource()==salvarConfiguracoes){//Se o usu�rio deseja salvar as configura��es de divis�o do PDF
+		if(e.getSource()==salvarConfiguracoes){//Se o usuário deseja salvar as configurações de divisão do PDF
 			if(this.textoPaginaInicial.getText().equals("") || this.textoPaginasPorArquivo.getText().equals("")){
 				Message.mensagemAlerta("Preencha os campos", TITULO);
 			}
@@ -435,7 +464,7 @@ public class Janela implements MouseListener{
 					Message.mensagemInformacao("Dados salvos", TITULO);
 				}
 				catch(NumberFormatException exception){
-					Message.mensagemErro("Informe valores v�lidos", TITULO);
+					Message.mensagemErro("Informe valores válidos", TITULO);
 				}
 				if(this.textoPaginaFinal.getText().equals("")){
 					this.paginaFinal=null;
