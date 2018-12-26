@@ -211,9 +211,9 @@ public class Janela implements MouseListener{
 	}
 
 	private void checarConteudo(){
-		boolean sucess=true;
+		boolean fimChecagemSucesso=true;
 		texto.setText("");
-		texto.append("Checando conteúdo dos arquivos:\n\n");
+		texto.append("Verificação preeliminar do conteúdo dos arquivos:\n\n");
 		for(ArquivoPDF arquivoPDF:listaArquivosPDF){
 			String nomeAntigo=arquivoPDF.getArquivo().getName();
 			String nomeFinal;
@@ -226,15 +226,16 @@ public class Janela implements MouseListener{
 			}
 			else{//Se algum dos dados falhou ao ser extraído
 				texto.append(nomeAntigo+" não possui o conteúdo desejado.");
-				sucess=false;
+				fimChecagemSucesso=false;
 			}
 			texto.append("\n");
 		}
-		if(sucess){
-			texto.append("\nTodos os arquivos são válidos, execute a renomeação dos arquivos.");
+		if(fimChecagemSucesso){
+			texto.append("\nTodos os arquivos foram checados e são válidos, execute a renomeação dos arquivos.");
 		}
 		else{
-			texto.append("\nUm ou mais arquivos não possui o conteúdo desejado.");
+			texto.append("\nUm ou mais arquivos da lista não possui o conteúdo desejado. Verifique os arquivos caso "
+					+ "precise renomeá-los");
 		}
 		texto.append("\n");
 	}
@@ -366,6 +367,8 @@ public class Janela implements MouseListener{
 					}
 					else{
 						texto.append(nomeAntigo+" não possui o conteúdo desejado.");
+						arquivosComErro++;
+						fimProcessoSucesso=false;
 					}
 					texto.append("\n");
 				}
@@ -375,10 +378,10 @@ public class Janela implements MouseListener{
 				}
 				else{//Caso algum arquivo tenha falhado
 					if(arquivosComErro==1) {
-						texto.append("1 arquivo não pode ser renomeado.");
+						texto.append("1 arquivo não pôde ser renomeado.");
 					}
 					else {
-						texto.append(arquivosComErro+" arquivos não pode ser renomeado.");
+						texto.append(arquivosComErro+" arquivos não puderam ser renomeados.");
 					}
 				}
 				texto.append("\n");

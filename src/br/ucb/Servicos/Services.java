@@ -272,7 +272,8 @@ public class Services {
 			resultado=true;
 		} 
 		catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			//resultado=false;
 		}
 		return resultado;
 	}
