@@ -410,10 +410,10 @@ public class Janela implements MouseListener{
 			if(this.listaArquivosPDF.size()>0){//Se houver arquivos abertos
 				try{
 					checarConteudo();
-					Message.mensagemInformacao("Verifique os dados extra�dos", TITULO);
+					Message.mensagemInformacao("Verifique os dados extraídos", TITULO);
 				}
 				catch(NullPointerException error){
-					Message.mensagemErro("Arquivo n�o � leg�vel", TITULO);
+					Message.mensagemErro("Arquivo não é legível", TITULO);
 				}
 			}
 			else{
@@ -422,7 +422,7 @@ public class Janela implements MouseListener{
 		}
 		if(e.getSource()==sobre){//Se o usuário clica em SOBRE
 			texto.setText("");
-			texto.append("Extrator PDF V2.\n\n"
+			texto.append("Extrator PDF V2. (itextpdf-5.5.1)\n\n"
 					+ "Gestor: Danilo André Silva\n"
 					+ "Desenvolvimento: Bruno Barcelos Dornellas\n"
 					+ "\n"
