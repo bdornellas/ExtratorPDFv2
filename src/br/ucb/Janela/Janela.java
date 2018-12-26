@@ -6,11 +6,9 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.jar.Manifest;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -115,7 +113,6 @@ public class Janela implements MouseListener{
 		texto.setEditable(false);
 		painelPrincipal=new JPanel();
 		painelDetalhes=new JPanel();
-		//painelDetalhes.setLayout(new GridLayout(1,2,2,2));
 		painelDiretorio=new JPanel();
 		painelArquivosAbertos=new JPanel();
 		painelTexto=new JPanel();
@@ -152,23 +149,23 @@ public class Janela implements MouseListener{
 
 	}
 
-	//M�todo para criar a janela de configura��es
+	//Método para criar a janela de configurações
 	private void criaJanelaConfiguracoes(){
 		janelaConfiguracoes=new JFrame();
 		janelaConfiguracoes.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
 		janelaConfiguracoes.setTitle(TITULO);
-		labelPaginaInicial=new JLabel("A partir da p�gina: ");
-		labelPaginasPorArquivo=new JLabel("P�ginas por arquivo: ");
+		labelPaginaInicial=new JLabel("A partir da página: ");
+		labelPaginasPorArquivo=new JLabel("Páginas por arquivo: ");
 		textoPaginaInicial=new JTextField(this.paginaInicial.toString());
 		textoPaginaInicial.setColumns(3);
-		textoPaginaInicial.setToolTipText("Informe a p�gina do arquivo para come�ar a divis�o");
+		textoPaginaInicial.setToolTipText("Informe a página do arquivo para começar a divisão");
 		textoPaginasPorArquivo=new JTextField(this.paginasPorArquivo.toString());
 		textoPaginasPorArquivo.setColumns(3);
-		textoPaginasPorArquivo.setToolTipText("Informe quantas p�ginas cada arquivo deve ter");
+		textoPaginasPorArquivo.setToolTipText("Informe quantas páginas cada arquivo deve ter");
 		textoPaginaFinal=new JTextField();
 		textoPaginaFinal.setColumns(3);
-		textoPaginaFinal.setToolTipText("Dica: deixe em branco para dividir at� o final do arquivo.");
-		labelPaginaFinal=new JLabel("At� a p�gina: ");
+		textoPaginaFinal.setToolTipText("Dica: deixe em branco para dividir até o final do arquivo.");
+		labelPaginaFinal=new JLabel("Até a página: ");
 		salvarConfiguracoes=new JButton("Salvar");
 		salvarConfiguracoes.addMouseListener(this);
 		cancelarConfiguracoes=new JButton("Cancelar");
@@ -194,7 +191,7 @@ public class Janela implements MouseListener{
 
 	}
 
-	//M�todo que centraliza a janela passada como par�metro
+	//Método que centraliza a janela passada como parâmetro
 	public static void centraliza(JFrame janela){
 		Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
 		janela.setLocation((tela.width-janela.getSize().width)/2,(tela.height-janela.getSize().height)/2);  
@@ -216,28 +213,28 @@ public class Janela implements MouseListener{
 	private void checarConteudo(){
 		boolean sucess=true;
 		texto.setText("");
-		texto.append("Checando conte�do dos arquivos:\n\n");
+		texto.append("Checando conteúdo dos arquivos:\n\n");
 		for(ArquivoPDF arquivoPDF:listaArquivosPDF){
 			String nomeAntigo=arquivoPDF.getArquivo().getName();
 			String nomeFinal;
 			String nomeAR=Services.extraiNomeAR(arquivoPDF.getConteudo());
 			String nomeAG=Services.extraiAgencia(arquivoPDF.getConteudo());
 			String nomeOP=Services.extraiOperacao(arquivoPDF.getConteudo());
-			if(!nomeAR.equals("") && !nomeAG.equals("") && !nomeOP.equals("")){//Se conseguiu extrair os dados necess�rio
+			if(!nomeAR.equals("") && !nomeAG.equals("") && !nomeOP.equals("")){//Se conseguiu extrair os dados necessários
 				nomeFinal=nomeAR+" - "+nomeAG+" - "+nomeOP+".pdf";
 				texto.append(nomeAntigo+" -> "+nomeFinal);
 			}
-			else{//Se algum dos dados falhou ao ser extra�do
-				texto.append(nomeAntigo+" n�o possui o conte�do desejado.");
+			else{//Se algum dos dados falhou ao ser extraído
+				texto.append(nomeAntigo+" não possui o conteúdo desejado.");
 				sucess=false;
 			}
 			texto.append("\n");
 		}
 		if(sucess){
-			texto.append("\nTodos os arquivos s�o v�lidos, execute a renomea��o dos arquivos.");
+			texto.append("\nTodos os arquivos são válidos, execute a renomeação dos arquivos.");
 		}
 		else{
-			texto.append("\nUm ou mais arquivos n�o possui o conte�do desejado.");
+			texto.append("\nUm ou mais arquivos não possui o conteúdo desejado.");
 		}
 		texto.append("\n");
 	}
@@ -268,15 +265,15 @@ public class Janela implements MouseListener{
 			boolean sucess=true;
 			this.janelaDiretorio = new JFileChooser();
 			janelaDiretorio.setDialogTitle(TITULO);
-			janelaDiretorio.setApproveButtonText("Selecionar");//Texto do bot�o de selecionar
+			janelaDiretorio.setApproveButtonText("Selecionar");//Texto do botão de selecionar
 			janelaDiretorio.setMultiSelectionEnabled(true);
-			janelaDiretorio.setApproveButtonToolTipText("Clique para finalizar a sele��o de arquivos");
+			janelaDiretorio.setApproveButtonToolTipText("Clique para finalizar a seleção de arquivos");
 			janelaDiretorio.setFileFilter(new FileNameExtensionFilter("Arquivo PDF", "pdf")); 
-			janelaDiretorio.setAcceptAllFileFilterUsed(false);//Nao aceitar todas as extens�es
+			janelaDiretorio.setAcceptAllFileFilterUsed(false);//Nao aceitar todas as extensões
 
-			int retorno = janelaDiretorio.showDialog(janela, null);//Mostra a janela e captura qual bot�o foi clicado  
-			if (retorno == JFileChooser.APPROVE_OPTION) {//Se clicou no bot�o de SELECIONAR   
-				File [] files=janelaDiretorio.getSelectedFiles();//Array cont�m lista de arquivos selecionados
+			int retorno = janelaDiretorio.showDialog(janela, null);//Mostra a janela e captura qual botão foi clicado  
+			if (retorno == JFileChooser.APPROVE_OPTION) {//Se clicou no botão de SELECIONAR   
+				File [] files=janelaDiretorio.getSelectedFiles();//Array contém lista de arquivos selecionados
 				listaArquivosPDF=new ArrayList<ArquivoPDF>();
 				for(int aux=0;aux<files.length;aux++){
 					try{
@@ -306,45 +303,47 @@ public class Janela implements MouseListener{
 					dividirArquivos.setEnabled(true);
 				}
 				if(!sucess){
-					Message.mensagemAlerta("Um ou mais arquivos n�o � leg�vel", TITULO);
+					Message.mensagemAlerta("Um ou mais arquivos não é legível", TITULO);
 				}
 			}
 		}
-		if(e.getSource()==descartarArquivos && descartarArquivos.isEnabled()){//Se o usu�rio deseja fechar os arquivos abertos
+		if(e.getSource()==descartarArquivos && descartarArquivos.isEnabled()){//Se o usuário deseja fechar os arquivos abertos
 			if(this.listaArquivosPDF.size()>0){//Se houver arquivos abertos	
 				descartar();
 			}
-			else{//Se n�o houver arquivos abertos
-				Message.mensagemAlerta("Nenhum arquivo aberto no momento", "Aten��o");
+			else{//Se não houver arquivos abertos
+				Message.mensagemAlerta("Nenhum arquivo aberto no momento", "Atenção");
 			}
 		}
-		if(e.getSource()==sair){//Se o usu�rio clica em SAIR
+		if(e.getSource()==sair){//Se o usuário clica em SAIR
 			System.exit(0);
 		}
-		if(e.getSource()==dividirArquivos && dividirArquivos.isEnabled()){//Se o usu�rio quer dividir um PDF
+		if(e.getSource()==dividirArquivos && dividirArquivos.isEnabled()){//Se o usuário quer dividir um PDF
 			boolean resultado;
 			texto.setText("");
-			texto.append("Aguarde, arquivos em an�lise no momento...\n\n");
+			texto.append("Aguarde, arquivos em análise no momento...\n\n");
 			for(ArquivoPDF temp:listaArquivosPDF){//Percorre a lsita de arquivos PDF
 				resultado=false;
-				texto.append(temp.getArquivo().getAbsolutePath()+" em an�lise\n");
+				texto.append(temp.getArquivo().getAbsolutePath()+" em análise\n");
 				resultado=Services.dividirPDF(temp, this.paginaInicial,this.paginaFinal, this.paginasPorArquivo);
 				if(resultado){
-					texto.append(temp.getArquivo().getAbsolutePath()+" CONCU�DO\n");
+					texto.append(temp.getArquivo().getAbsolutePath()+" CONCLUÍDO\n");
 				}
 				else{
 					texto.append(temp.getArquivo().getAbsolutePath()+" ERRO\n");
 				}
 				texto.append("\n");
 			}
-			Message.mensagemInformacao("Divis�o de arquivos conclu�da", TITULO);
+			Message.mensagemInformacao("Divisão de arquivos concluída", TITULO);
 			descartar();
 		}
-		if(e.getSource()==renomearArquivos && renomearArquivos.isEnabled()){//Se o usu�rio deseja renomear os arquivos
-			boolean endSucess=true;
-			boolean sucess=false;//Flag que indica se o processo deu certo
+		if(e.getSource()==renomearArquivos && renomearArquivos.isEnabled()){//Se o usuário deseja renomear os arquivos
+			int arquivosConvertidos=0;//Conta arquivos renomeados corretamente
+			int arquivosComErro=0;//Conta arquivos que não foram renomeados
+			boolean fimProcessoSucesso=true;//Indica se o todos os arquivos foram renomeados com sucesso
+			boolean renomearSucesso=false;//Indica se o arquivo foi renomeado com sucesso
 			texto.setText("");
-			texto.append("Relat�rio da execu��o do trabalho:\n\n");
+			texto.append("Relatório da execução do trabalho:\n\n");
 			try{
 				for(ArquivoPDF arquivoPDF:listaArquivosPDF){
 					String nomeAntigo=arquivoPDF.getArquivo().getName();
@@ -354,42 +353,47 @@ public class Janela implements MouseListener{
 					String nomeOP=Services.extraiOperacao(arquivoPDF.getConteudo());
 					if(!nomeAR.equals("") && !nomeAG.equals("") && !nomeOP.equals("")){
 						nomeFinal=nomeAR+" - "+nomeAG+" - "+nomeOP+".pdf";
-						sucess=Services.renomear(arquivoPDF.getArquivo(), nomeFinal);
-						if(sucess){
+						renomearSucesso=Services.renomear(arquivoPDF.getArquivo(), nomeFinal);
+						if(renomearSucesso){
 							texto.append(nomeAntigo+" renomeado para "+nomeFinal);
+							arquivosConvertidos++;
 						}
 						else{
-							texto.append("N�o foi poss�vel renomear o arquivo "+nomeAntigo);
-							if(endSucess){
-								endSucess=!endSucess;
-							}
+							texto.append("Não foi possível renomear o arquivo "+nomeAntigo);
+							arquivosComErro++;
+							fimProcessoSucesso=false;
 						}
 					}
 					else{
-						texto.append(nomeAntigo+" n�o possui o conte�do desejado.");
+						texto.append(nomeAntigo+" não possui o conteúdo desejado.");
 					}
 					texto.append("\n");
 				}
 				texto.append("\n");
-				if(endSucess){
-					texto.append("Todos os arquivos foram renomeados com sucesso.");
+				if(fimProcessoSucesso){//Se todos os arquivos foram renomeados com sucesso
+					texto.append("Todos os arquivos foram renomeados com sucesso. (Total: "+arquivosConvertidos+")");
 				}
-				else{
-					texto.append("Um ou mais arquivos n�o pode ser renomeado.");
+				else{//Caso algum arquivo tenha falhado
+					if(arquivosComErro==1) {
+						texto.append("1 arquivo não pode ser renomeado.");
+					}
+					else {
+						texto.append(arquivosComErro+" arquivos não pode ser renomeado.");
+					}
 				}
 				texto.append("\n");
-				Message.mensagemLimpa("Verifique o relat�rio do trabalho", TITULO);
+				Message.mensagemLimpa("Verifique o relatório do trabalho", TITULO);
 			}
 			catch(NullPointerException error){
-				Message.mensagemErro("Arquivo n�o � leg�vel", TITULO);
+				Message.mensagemErro("Arquivo não é legível", TITULO);
 			}
 		}
-		if(e.getSource()==configuracoes && configuracoes.isEnabled()){//Se o usu�rio deseja alterar as configura��es de divis�o do PDF
-			if(this.janelaConfiguracoes==null){//Se n�o houver janela criada
+		if(e.getSource()==configuracoes && configuracoes.isEnabled()){//Se o usuário deseja alterar as configura��es de divis�o do PDF
+			if(this.janelaConfiguracoes==null){//Se não houver janela criada
 				this.criaJanelaConfiguracoes();
 			}
 			else{
-				this.janelaConfiguracoes.setVisible(true);//Se j� houver janela criada
+				this.janelaConfiguracoes.setVisible(true);//Se já houver janela criada
 			}
 		}
 		if((e.getSource()==listarArquivos && listarArquivos.isEnabled()) || e.getSource()==labelQtdeArquivos){//Se o usu�rio deseja ver quais s�o os arquivos que est�o abertos
